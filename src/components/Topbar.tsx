@@ -9,7 +9,7 @@ export default function Topbar() {
         <button className="md:hidden text-on-surface-variant hover:text-on-surface">
           <span className="material-symbols-outlined">menu</span>
         </button>
-        <div className="font-h1 text-h1 font-bold text-on-surface tracking-tight md:hidden">AeroFlow</div>
+        <div className="font-h1 text-h1 font-bold text-on-surface tracking-tight md:hidden">Projira</div>
         
         <div className="hidden md:flex items-center text-on-surface-variant font-body-md text-body-md">
           <span>Projects</span>
