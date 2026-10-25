@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
 import type { TaskType, Priority } from '../interfaces';
+import { TAKIM } from '../data/ekip';
 
 export default function CreateTaskModal() {
   const { isCreateModalOpen, setCreateModalOpen, addTask } = useBoardStore();
@@ -10,6 +11,7 @@ export default function CreateTaskModal() {
   const [type, setType] = useState<TaskType>('Task');
   const [priority, setPriority] = useState<Priority>('Medium');
   const [estimatedTime, setEstimatedTime] = useState<number | ''>('');
+  const [assigneeId, setAssigneeId] = useState('');
 
   if (!isCreateModalOpen) return null;
 
@@ -20,7 +22,8 @@ export default function CreateTaskModal() {
       type,
       priority,
       description,
-      estimatedTime: estimatedTime ? Number(estimatedTime) : undefined
+      estimatedTime: estimatedTime ? Number(estimatedTime) : undefined,
+      assignee: TAKIM.filter((u) => u.id === assigneeId).map((u) => ({ id: u.id, name: u.ad }))[0]
     });
     
     setCreateModalOpen(false);
@@ -29,6 +32,7 @@ export default function CreateTaskModal() {
     setType('Task');
     setPriority('Medium');
     setEstimatedTime('');
+    setAssigneeId('');
   };
 
   const getIconForType = (t: TaskType) => {
@@ -160,6 +164,22 @@ export default function CreateTaskModal() {
                 />
                 <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">schedule</span>
               </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-sm">
+            <label className="font-label-sm text-label-sm text-on-surface-variant">Assignee</label>
+            <div className="relative">
+              <select
+                value={assigneeId}
+                onChange={(e) => setAssigneeId(e.target.value)}
+                className="w-full bg-[#0B0C0E] border border-white/10 rounded-lg py-sm pl-xl pr-xl text-body-md text-on-surface appearance-none focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
+              >
+                <option value="">Atanmamış</option>
+                {TAKIM.map((u) => <option key={u.id} value={u.id}>{u.ad} ({u.rol})</option>)}
+              </select>
+              <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[20px]">person</span>
+              <span className="material-symbols-outlined absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
             </div>
           </div>
 

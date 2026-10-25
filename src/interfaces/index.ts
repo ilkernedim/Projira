@@ -51,4 +51,8 @@ export interface SprintReport {
   totalLogged: number;
   deviationPercent: number;
   endDate: number;
+  // sprintte kapanan işlerin kişi bazlı tahmin ve gerçekleşen saati, DENG-AI buradan öğrenir
+  memberStats?: Record<string, { estimated: number; logged: number }>;
+  // örnek geçmiş verisi, kullanıcının kendi sprintlerinden ayırmak için
+  ornek?: boolean;
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useBoardStore } from '../store/useBoardStore';
 import type { TaskType, Comment } from '../interfaces';
+import { TAKIM } from '../data/ekip';
 
 export default function TaskModal() {
   const { board, activeTaskId, setActiveTask, updateTask } = useBoardStore();
@@ -229,9 +230,24 @@ export default function TaskModal() {
               
               <div className="flex flex-col gap-xs">
                 <span className="font-label-sm text-on-surface-variant">Atanan Kişi</span>
-                <div className="flex items-center gap-sm hover:bg-white/5 p-xs rounded cursor-pointer transition-colors -mx-xs">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-label-sm text-[10px]">UN</div>
-                  <span className="font-body-md text-on-surface">Unassigned</span>
+                <div className="flex items-center gap-sm">
+                  <div
+                    className="w-6 h-6 shrink-0 rounded-full flex items-center justify-center text-white font-bold text-[10px]"
+                    style={{ background: TAKIM.find((u) => u.id === task.assignee?.id)?.renk ?? '#31353d' }}
+                  >
+                    {task.assignee ? task.assignee.name.slice(0, 2).toUpperCase() : '?'}
+                  </div>
+                  <select
+                    value={task.assignee?.id ?? ''}
+                    onChange={(e) => {
+                      const uye = TAKIM.find((u) => u.id === e.target.value);
+                      updateTask(task.id, { assignee: uye ? { id: uye.id, name: uye.ad } : undefined });
+                    }}
+                    className="flex-1 bg-transparent border border-white/10 rounded px-sm py-1 text-on-surface font-body-md focus:outline-none focus:border-primary"
+                  >
+                    <option value="">Atanmamış</option>
+                    {TAKIM.map((u) => <option key={u.id} value={u.id}>{u.ad} ({u.rol})</option>)}
+                  </select>
                 </div>
               </div>
 

@@ -2,6 +2,7 @@ import { Draggable } from '@hello-pangea/dnd';
 import type { Task } from '../interfaces';
 import { twMerge } from 'tailwind-merge';
 import { useBoardStore } from '../store/useBoardStore';
+import { TAKIM } from '../data/ekip';
 
 interface TaskCardProps {
   task: Task;
@@ -92,15 +93,17 @@ export default function TaskCard({ task, index }: TaskCardProps) {
               )}
             </div>
             
-            {task.reporter?.avatarUrl ? (
-              <img 
-                alt="Assignee" 
-                className={`w-6 h-6 rounded-full object-cover border border-white/10 ${isDone ? 'opacity-60' : ''}`}
-                src={task.reporter.avatarUrl} 
-              />
+            {task.assignee ? (
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] text-white font-bold ${isDone ? 'opacity-60' : ''}`}
+                style={{ background: TAKIM.find((u) => u.id === task.assignee?.id)?.renk ?? '#8b90a0' }}
+                title={task.assignee.name}
+              >
+                {task.assignee.name.slice(0, 2).toUpperCase()}
+              </div>
             ) : (
-              <div className="w-6 h-6 rounded-full bg-orange-600 flex items-center justify-center text-[10px] text-white font-bold">
-                İL
+              <div className="w-6 h-6 rounded-full border border-dashed border-on-surface-variant/60 flex items-center justify-center text-[11px] text-on-surface-variant" title="Atanmamış">
+                ?
               </div>
             )}
           </div>
