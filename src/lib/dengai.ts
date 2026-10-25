@@ -135,32 +135,23 @@ export function oneriBul(board: BoardData, sprintler: SprintReport[], baslangic:
   const temel = analizEt(board, sprintler, baslangic);
   if (temel.kaymaGun <= 0 && temel.uyeler.every((u) => u.yukYuzde <= 100)) return null;
 
-  const ekstra: Record<string, number> = {};
-  let guncel = temel;
-  let enIyi: { ekstra: Record<string, number>; analiz: EkipAnalizi } | null = null;
-
-  for (let adim = 0; adim < 20; adim++) {
-    const cok = guncel.uyeler.reduce((a, b) => (b.yukYuzde > a.yukYuzde ? b : a));
-    const az = guncel.uyeler.reduce((a, b) => (b.yukYuzde < a.yukYuzde ? b : a));
-    if (cok.uye.id === az.uye.id || cok.atanan < 2 || cok.yukYuzde - az.yukYuzde < 5) break;
-    ekstra[cok.uye.id] = (ekstra[cok.uye.id] ?? 0) - 2;
-    ekstra[az.uye.id] = (ekstra[az.uye.id] ?? 0) + 2;
-    guncel = analizEt(board, sprintler, baslangic, ekstra);
-    if (!enIyi || guncel.gercekciIsGunu < enIyi.analiz.gercekciIsGunu) enIyi = { ekstra: { ...ekstra }, analiz: guncel };
+  // Ekranda anlatılan tek aktarımı hesapla; başka kişilere gizli aktarım yapma.
+  let enIyi: Oneri | null = null;
+  for (const kimden of temel.uyeler) {
+    for (const kime of temel.uyeler) {
+      if (kimden.uye.id === kime.uye.id) continue;
+      for (let saat = 2; saat <= Math.min(kimden.atanan, 40); saat += 2) {
+        const ekstra = { [kimden.uye.id]: -saat, [kime.uye.id]: saat };
+        const yeni = analizEt(board, sprintler, baslangic, ekstra);
+        const kazancGun = temel.gercekciIsGunu - yeni.gercekciIsGunu;
+        if (kazancGun > 0 && (!enIyi || kazancGun > enIyi.kazancGun ||
+          (kazancGun === enIyi.kazancGun && saat < enIyi.saat))) {
+          enIyi = { ekstra, kimden, kime, saat, yeni, kazancGun };
+        }
+      }
+    }
   }
-
-  if (!enIyi || enIyi.analiz.gercekciIsGunu >= temel.gercekciIsGunu) return null;
-  const sirali = Object.entries(enIyi.ekstra).sort((a, b) => a[1] - b[1]);
-  const kimdenId = sirali[0][0];
-  const kimeId = sirali[sirali.length - 1][0];
-  return {
-    ekstra: enIyi.ekstra,
-    kimden: temel.uyeler.find((u) => u.uye.id === kimdenId)!,
-    kime: temel.uyeler.find((u) => u.uye.id === kimeId)!,
-    saat: Math.abs(sirali[0][1]),
-    yeni: enIyi.analiz,
-    kazancGun: temel.gercekciIsGunu - enIyi.analiz.gercekciIsGunu,
-  };
+  return enIyi;
 }
 
 export const tarihYaz = (d: Date) => format(d, 'd MMMM yyyy, EEEE', { locale: tr });
@@ -203,4 +194,20 @@ export function yorumlar(a: EkipAnalizi): { tur: 'uyari' | 'bilgi' | 'iyi'; meti
   const rahat = a.uyeler.filter((u) => u.yukYuzde < 70).map((u) => u.uye.ad);
   if (rahat.length) liste.push({ tur: 'iyi', metin: `${rahat.join(', ')} kapasitesinin %70'inin altında, iş devredilebilir.` });
   return liste;
+}
+
+// Aktarım toplam işi korur ve kaynak kişideki kullanılabilir yükü aşmaz.
+export function senaryoKur(temel: EkipAnalizi, oneri: Record<string, number>,
+  yeniKisi: string, yeniSaat: number, kimden: string, kime: string, istenenSaat: number) {
+  const ekstra = { ...oneri };
+  const pozitif = (s: number) => Number.isFinite(s) ? Math.max(0, s) : 0;
+  const eklenen = pozitif(yeniSaat);
+  if (eklenen) ekstra[yeniKisi] = (ekstra[yeniKisi] ?? 0) + eklenen;
+  const mevcut = temel.uyeler.find((u) => u.uye.id === kimden)?.atanan ?? 0;
+  const aktarilan = kimden === kime ? 0 : Math.min(pozitif(istenenSaat), Math.max(0, mevcut + (ekstra[kimden] ?? 0)));
+  if (aktarilan) {
+    ekstra[kimden] = (ekstra[kimden] ?? 0) - aktarilan;
+    ekstra[kime] = (ekstra[kime] ?? 0) + aktarilan;
+  }
+  return { ekstra: Object.fromEntries(Object.entries(ekstra).filter(([, saat]) => saat !== 0)), aktarilan };
 }

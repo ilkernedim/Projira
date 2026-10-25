@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { SPRINT_KAPASITE_SAAT, TAKIM } from '../data/ekip';
-import { analizEt, gunFarki, kalanSaat, oneriBul, sprintOzeti, tarihYaz, yorumlar } from '../lib/dengai';
+import { analizEt, gunFarki, kalanSaat, oneriBul, senaryoKur, sprintOzeti, tarihYaz, yorumlar } from '../lib/dengai';
 import { useBoardStore } from '../store/useBoardStore';
 
 const kart = 'rounded-xl p-lg bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]';
@@ -31,15 +31,15 @@ export default function DengAi() {
   const temel = useMemo(() => analizEt(board, sprintler, baslangic), [board, sprintler, baslangic]);
   const oneri = useMemo(() => oneriBul(board, sprintler, baslangic), [board, sprintler, baslangic]);
 
-  const ekstra = useMemo(() => {
-    const e: Record<string, number> = { ...(oneriEkstra ?? {}) };
-    if (yeniSaat) e[yeniKisi] = (e[yeniKisi] ?? 0) + yeniSaat;
-    if (devirSaat && devirKimden !== devirKime) {
-      e[devirKimden] = (e[devirKimden] ?? 0) - devirSaat;
-      e[devirKime] = (e[devirKime] ?? 0) + devirSaat;
-    }
-    return e;
-  }, [oneriEkstra, yeniSaat, yeniKisi, devirSaat, devirKimden, devirKime]);
+  // Pano değiştiğinde eski öneriyi yeni veriye uygulama.
+  const [oneriPano, setOneriPano] = useState<typeof board | null>(null);
+  const [oneriGecmis, setOneriGecmis] = useState<typeof sprintler | null>(null);
+  const aktifOneri = oneriPano === board && oneriGecmis === sprintler ? oneriEkstra : null;
+  const { ekstra, aktarilan } = useMemo(() => senaryoKur(
+    temel, aktifOneri ?? {}, yeniKisi, yeniSaat, devirKimden, devirKime, devirSaat,
+  ), [temel, aktifOneri, yeniKisi, yeniSaat, devirKimden, devirKime, devirSaat]);
+  const devirSiniri = Math.max(0, (temel.uyeler.find((u) => u.uye.id === devirKimden)?.atanan ?? 0)
+    + (aktifOneri?.[devirKimden] ?? 0) + (yeniKisi === devirKimden ? yeniSaat : 0));
 
   const senaryo = useMemo(() => analizEt(board, sprintler, baslangic, ekstra), [board, sprintler, baslangic, ekstra]);
   const degisti = Object.keys(ekstra).length > 0;
@@ -159,7 +159,7 @@ export default function DengAi() {
                     <b className="text-on-surface">{oneri.kimden.uye.ad}</b> kişisinden <b className="text-on-surface">{oneri.kime.uye.ad}</b> kişisine yaklaşık{' '}
                     <b className="text-on-surface">{oneri.saat} saatlik</b> iş aktarılırsa gerçekçi teslim{' '}
                     <b className="text-on-surface">{tarihYaz(oneri.yeni.gercekciBitis).split(',')[0]}</b> olur ({oneri.kazancGun} iş günü kazanç).{' '}
-                    {oneri.kimden.uye.ad} yükü %{oneri.kimden.yukYuzde} değerinden %{oneri.yeni.uyeler.find((u) => u.uye.id === oneri.kimden.uye.id)?.yukYuzde}'e, {oneri.kime.uye.ad} yükü %{oneri.kime.yukYuzde} değerinden %{oneri.yeni.uyeler.find((u) => u.uye.id === oneri.kime.uye.id)?.yukYuzde}'e çıkar.
+                    {oneri.kimden.uye.ad} yükü %{oneri.kimden.yukYuzde} değerinden %{oneri.yeni.uyeler.find((u) => u.uye.id === oneri.kimden.uye.id)?.yukYuzde}'e iner; {oneri.kime.uye.ad} yükü %{oneri.kime.yukYuzde} değerinden %{oneri.yeni.uyeler.find((u) => u.uye.id === oneri.kime.uye.id)?.yukYuzde}'e çıkar.
                   </p>
                 </div>
               </div>
@@ -168,6 +168,8 @@ export default function DengAi() {
                   setYeniSaat(0);
                   setDevirSaat(0);
                   setOneriEkstra(oneri.ekstra);
+                  setOneriPano(board);
+                  setOneriGecmis(sprintler);
                 }}
                 className="shrink-0 px-lg py-sm rounded-lg bg-secondary-container text-on-secondary-container hover:brightness-110 font-label-sm transition-all"
               >
@@ -221,7 +223,7 @@ export default function DengAi() {
           <div className="space-y-md">
             <div>
               <label className="font-label-sm text-on-surface-variant block mb-1">Yeni iş ekle: {yeniSaat} saat</label>
-              <input type="range" min={0} max={40} step={2} value={yeniSaat} onChange={(e) => setYeniSaat(+e.target.value)} className="w-full accent-[#adc6ff]" />
+              <input type="range" min={0} max={Math.max(40, yeniSaat)} step={1} value={yeniSaat} onChange={(e) => setYeniSaat(+e.target.value)} className="w-full accent-[#adc6ff]" />
               <select value={yeniKisi} onChange={(e) => setYeniKisi(e.target.value)} className="mt-sm w-full bg-surface-container-high border border-white/10 rounded-lg px-sm py-sm text-on-surface font-body-md">
                 {TAKIM.map((u) => <option key={u.id} value={u.id}>{u.ad} ({u.rol}) kişisine ver</option>)}
               </select>
@@ -230,7 +232,7 @@ export default function DengAi() {
                   <p className="font-label-sm text-on-surface-variant mb-1">Panoda kimseye atanmamış işler (tıklayınca saati doldurur):</p>
                   <div className="flex flex-wrap gap-sm">
                     {senaryo.atanmamislar.map((t) => (
-                      <button key={t.id} onClick={() => setYeniSaat(Math.min(40, kalanSaat(t)))} className="px-sm py-1 rounded border border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-sm text-left" title={t.title}>
+                      <button key={t.id} onClick={() => setYeniSaat(kalanSaat(t))} className="px-sm py-1 rounded border border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-sm text-left" title={t.title}>
                         {t.title.length > 26 ? t.title.slice(0, 26) + '…' : t.title} ({kalanSaat(t)}s)
                       </button>
                     ))}
@@ -240,10 +242,10 @@ export default function DengAi() {
             </div>
 
             <div>
-              <label className="font-label-sm text-on-surface-variant block mb-1">İş devret: {devirSaat} saat</label>
-              <input type="range" min={0} max={30} step={2} value={devirSaat} onChange={(e) => setDevirSaat(+e.target.value)} className="w-full accent-[#d0bcff]" />
+              <label className="font-label-sm text-on-surface-variant block mb-1">İş devret: {aktarilan} saat</label>
+              <input type="range" min={0} max={devirSiniri} step={1} value={aktarilan} disabled={devirKimden === devirKime || devirSiniri === 0} onChange={(e) => setDevirSaat(+e.target.value)} className="w-full accent-[#d0bcff]" />
               <div className="grid grid-cols-2 gap-sm mt-sm">
-                <select value={devirKimden} onChange={(e) => setDevirKimden(e.target.value)} className="bg-surface-container-high border border-white/10 rounded-lg px-sm py-sm text-on-surface font-body-md">
+                <select value={devirKimden} onChange={(e) => { setDevirKimden(e.target.value); setDevirSaat(0); }} className="bg-surface-container-high border border-white/10 rounded-lg px-sm py-sm text-on-surface font-body-md">
                   {TAKIM.map((u) => <option key={u.id} value={u.id}>{u.ad} kişisinden</option>)}
                 </select>
                 <select value={devirKime} onChange={(e) => setDevirKime(e.target.value)} className="bg-surface-container-high border border-white/10 rounded-lg px-sm py-sm text-on-surface font-body-md">
@@ -252,6 +254,7 @@ export default function DengAi() {
               </div>
             </div>
 
+            <p className="font-label-sm text-on-surface-variant">Bu bir senaryodur; panodaki görevleri değiştirmez. Aktarım, kişinin kalan işiyle sınırlıdır. Farklı roller arasında iş devretmeden önce yetkinlik uygunluğunu değerlendirin.</p>
             <div className="rounded-lg border border-white/10 bg-surface-container-low p-md">
               <p className="font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Sonuç</p>
               <p className="font-body-lg text-on-surface">
@@ -261,6 +264,18 @@ export default function DengAi() {
                 {degisti ? (farkGun === 0 ? 'Mevcut duruma göre tarih değişmiyor.' : `Mevcut duruma göre ${farkGun > 0 ? farkGun + ' iş günü gecikme' : -farkGun + ' iş günü kazanç'}.`) : 'Bir değişiklik seçince burada görünür.'}
               </p>
             </div>
+            {degisti && (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left font-label-sm">
+                  <caption className="text-left text-on-surface mb-sm">Kalan iş karşılaştırması (saat)</caption>
+                  <thead><tr><th scope="col">Kişi</th><th scope="col">Mevcut</th><th scope="col">Senaryo</th></tr></thead>
+                  <tbody>{temel.uyeler.map((u, i) => <tr key={u.uye.id} className="border-t border-white/10">
+                    <th scope="row" className="py-2 font-normal">{u.uye.ad}</th><td>{u.atanan}</td><td>{senaryo.uyeler[i].atanan}</td>
+                  </tr>)}</tbody>
+                  <tfoot><tr className="border-t border-white/10"><th scope="row">Toplam</th><td>{temel.uyeler.reduce((t, u) => t + u.atanan, 0)}</td><td>{acikSaat}</td></tr></tfoot>
+                </table>
+              </div>
+            )}
             {degisti && (
               <button onClick={sifirla} className="w-full px-md py-sm rounded-lg border border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-sm transition-colors">
                 Senaryoyu sıfırla

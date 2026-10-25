@@ -9,7 +9,7 @@ import { ornekPano, ornekSprintler } from '../data/seed';
 interface BoardState {
   board: BoardData;
   activeTaskId: string | null;
-  currentView: 'board' | 'reports' | 'dengai' | 'settings';
+  currentView: 'overview' | 'board' | 'reports' | 'dengai' | 'jury' | 'settings';
   isSprintActive: boolean;
   sprintName: string;
   pastSprints: SprintReport[];
@@ -22,7 +22,7 @@ interface BoardState {
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
   setActiveTask: (taskId: string | null) => void;
-  setCurrentView: (view: 'board' | 'reports' | 'dengai' | 'settings') => void;
+  setCurrentView: (view: 'overview' | 'board' | 'reports' | 'dengai' | 'jury' | 'settings') => void;
   setSearchQuery: (query: string) => void;
   setCreateModalOpen: (isOpen: boolean) => void;
   
@@ -36,7 +36,7 @@ export const useBoardStore = create<BoardState>()(
     (set) => ({
       board: ornekPano(),
   activeTaskId: null,
-  currentView: 'board',
+  currentView: 'overview',
   isSprintActive: true,
   sprintName: 'Sprint 7',
   pastSprints: ornekSprintler(),

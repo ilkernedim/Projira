@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "tsc --ignoreConfig --module commonjs --moduleResolution node --ignoreDeprecations 6.0 --target es2023 --skipLibCheck --outDir node_modules/.tmp/dengai-tests src/lib/dengai.ts src/data/seed.ts && node tests/dengai.cjs"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
