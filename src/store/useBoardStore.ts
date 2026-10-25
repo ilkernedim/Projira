@@ -98,7 +98,7 @@ const initialData: BoardData = {
 interface BoardState {
   board: BoardData;
   activeTaskId: string | null;
-  currentView: 'board' | 'reports' | 'settings';
+  currentView: 'board' | 'reports' | 'dengai' | 'settings';
   isSprintActive: boolean;
   sprintName: string;
   pastSprints: SprintReport[];
@@ -111,7 +111,7 @@ interface BoardState {
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
   setActiveTask: (taskId: string | null) => void;
-  setCurrentView: (view: 'board' | 'reports' | 'settings') => void;
+  setCurrentView: (view: 'board' | 'reports' | 'dengai' | 'settings') => void;
   setSearchQuery: (query: string) => void;
   setCreateModalOpen: (isOpen: boolean) => void;
   

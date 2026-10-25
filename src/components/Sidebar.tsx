@@ -39,6 +39,18 @@ export default function Sidebar() {
           <span className="material-symbols-outlined text-[20px]" style={currentView === 'reports' ? { fontVariationSettings: "'FILL' 1" } : {}}>bar_chart</span>
           <span className={`font-body-md text-body-md ${currentView === 'reports' ? 'font-medium' : ''}`}>Reports</span>
         </button>
+
+        <button 
+          onClick={() => setCurrentView('dengai')}
+          className={`w-full flex items-center gap-md px-md py-sm rounded-DEFAULT transition-all ${
+            currentView === 'dengai' 
+              ? 'text-primary bg-secondary-container/20 border-l-2 border-primary' 
+              : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest group'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[20px]" style={currentView === 'dengai' ? { fontVariationSettings: "'FILL' 1" } : {}}>auto_awesome</span>
+          <span className={`font-body-md text-body-md ${currentView === 'dengai' ? 'font-medium' : ''}`}>DENG-AI</span>
+        </button>
       </div>
       
       <div className="px-sm mt-auto space-y-1 mb-lg">

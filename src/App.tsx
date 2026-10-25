@@ -4,6 +4,7 @@ import Board from './pages/Board';
 import Reports from './pages/Reports';
 import CreateTaskModal from './components/CreateTaskModal';
 import Settings from './pages/Settings';
+import DengAi from './pages/DengAi';
 import { useBoardStore } from './store/useBoardStore';
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
         <Topbar />
         {currentView === 'board' && <Board />}
         {currentView === 'reports' && <Reports />}
+        {currentView === 'dengai' && <DengAi />}
         {currentView === 'settings' && <Settings />}
       </main>
       <CreateTaskModal />
