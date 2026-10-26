@@ -1,3 +1,4 @@
+import { durumAdi } from '../lib/labels';
 import { useState } from 'react';
 import { Droppable } from '@hello-pangea/dnd';
 import type { Column as ColumnType, Task } from '../interfaces';
@@ -28,15 +29,16 @@ export default function Column({ column, tasks }: ColumnProps) {
   };
 
   return (
-    <div className={`flex flex-col w-[320px] shrink-0 h-full ${column.id === 'done' ? 'opacity-80' : ''}`}>
+    <div className="board-column flex flex-col h-full">
       <div className="flex items-center justify-between mb-sm px-sm">
         <div className="flex items-center gap-sm">
-          <h2 className="font-h2 text-h2 text-on-surface">{column.title}</h2>
+          <h2 className="font-h2 text-h2 text-on-surface">{durumAdi(column.id, column.title)}</h2>
           <span className={`text-label-sm font-label-sm px-2 py-0.5 rounded-full ${getBadgeStyle()}`}>
             {tasks.length}
           </span>
         </div>
-        <button 
+        <button
+          aria-label={`${durumAdi(column.id, column.title)} sütununa görev ekle`}
           onClick={() => setIsAdding(true)}
           className="text-on-surface-variant hover:text-on-surface transition-colors"
         >
@@ -59,7 +61,7 @@ export default function Column({ column, tasks }: ColumnProps) {
             {tasks.length === 0 && !isAdding && !snapshot.isDraggingOver && (
               <div className="flex flex-col items-center justify-center p-md border-2 border-dashed border-white/5 rounded-xl h-[120px] opacity-60">
                 <span className="material-symbols-outlined text-on-surface-variant mb-1">note_stack</span>
-                <span className="text-on-surface-variant font-label-sm">Drop tasks here</span>
+                <span className="text-on-surface-variant font-label-sm">Görevleri buraya sürükleyin</span>
               </div>
             )}
 
@@ -78,20 +80,20 @@ export default function Column({ column, tasks }: ColumnProps) {
                     if (!newTaskTitle.trim()) setIsAdding(false);
                   }}
                   className="w-full bg-surface-container border border-outline-variant rounded p-2 text-on-surface text-body-md focus:outline-none focus:border-primary"
-                  placeholder="What needs to be done?"
+                  placeholder="Ne yapılması gerekiyor?"
                 />
                 <div className="flex items-center gap-2 mt-2">
-                  <button 
+                  <button
                     onClick={handleAddTask}
                     className="bg-primary text-on-primary text-xs font-medium px-2 py-1 rounded hover:bg-primary-fixed transition-colors"
                   >
-                    Add
+                    Ekle
                   </button>
-                  <button 
+                  <button
                     onClick={() => setIsAdding(false)}
                     className="text-on-surface-variant hover:text-on-surface text-xs font-medium px-2 py-1 transition-colors"
                   >
-                    Cancel
+                    Vazgeç
                   </button>
                 </div>
               </div>

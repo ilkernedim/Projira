@@ -118,13 +118,13 @@ export default function DengAi() {
           <div className="h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={ozet} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#414755" vertical={false} />
-                <XAxis dataKey="ad" stroke="#8b90a0" tick={{ fill: '#8b90a0', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis stroke="#8b90a0" tick={{ fill: '#8b90a0', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: '#1c2028', border: '1px solid #414755', borderRadius: 8 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#D6DAE5" vertical={false} />
+                <XAxis dataKey="ad" stroke="#667085" tick={{ fill: '#667085', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis stroke="#667085" tick={{ fill: '#667085', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ background: '#F4F3FA', border: '1px solid #D6DAE5', borderRadius: 8 }} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="tahmin" name="Tahmini (saat)" fill="#adc6ff" radius={[4, 4, 0, 0]} maxBarSize={36} />
-                <Bar dataKey="gercek" name="Gerçekleşen (saat)" fill="#d0bcff" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                <Bar dataKey="tahmin" name="Tahmini (saat)" fill="#5B4BDB" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                <Bar dataKey="gercek" name="Gerçekleşen (saat)" fill="#0F9386" radius={[4, 4, 0, 0]} maxBarSize={36} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -223,7 +223,7 @@ export default function DengAi() {
           <div className="space-y-md">
             <div>
               <label className="font-label-sm text-on-surface-variant block mb-1">Yeni iş ekle: {yeniSaat} saat</label>
-              <input type="range" min={0} max={Math.max(40, yeniSaat)} step={1} value={yeniSaat} onChange={(e) => setYeniSaat(+e.target.value)} className="w-full accent-[#adc6ff]" />
+              <input type="range" min={0} max={Math.max(40, yeniSaat)} step={1} value={yeniSaat} onChange={(e) => setYeniSaat(+e.target.value)} className="w-full accent-[#5B4BDB]" />
               <select value={yeniKisi} onChange={(e) => setYeniKisi(e.target.value)} className="mt-sm w-full bg-surface-container-high border border-white/10 rounded-lg px-sm py-sm text-on-surface font-body-md">
                 {TAKIM.map((u) => <option key={u.id} value={u.id}>{u.ad} ({u.rol}) kişisine ver</option>)}
               </select>
@@ -243,7 +243,7 @@ export default function DengAi() {
 
             <div>
               <label className="font-label-sm text-on-surface-variant block mb-1">İş devret: {aktarilan} saat</label>
-              <input type="range" min={0} max={devirSiniri} step={1} value={aktarilan} disabled={devirKimden === devirKime || devirSiniri === 0} onChange={(e) => setDevirSaat(+e.target.value)} className="w-full accent-[#d0bcff]" />
+              <input type="range" min={0} max={devirSiniri} step={1} value={aktarilan} disabled={devirKimden === devirKime || devirSiniri === 0} onChange={(e) => setDevirSaat(+e.target.value)} className="w-full accent-[#0F9386]" />
               <div className="grid grid-cols-2 gap-sm mt-sm">
                 <select value={devirKimden} onChange={(e) => { setDevirKimden(e.target.value); setDevirSaat(0); }} className="bg-surface-container-high border border-white/10 rounded-lg px-sm py-sm text-on-surface font-body-md">
                   {TAKIM.map((u) => <option key={u.id} value={u.id}>{u.ad} kişisinden</option>)}

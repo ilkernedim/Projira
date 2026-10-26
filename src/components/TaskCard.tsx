@@ -1,3 +1,4 @@
+import { oncelikAdi } from '../lib/labels';
 import { Draggable } from '@hello-pangea/dnd';
 import type { Task } from '../interfaces';
 import { twMerge } from 'tailwind-merge';
@@ -28,12 +29,12 @@ export default function TaskCard({ task, index }: TaskCardProps) {
   };
 
   const getCardStyle = () => {
-    let style = "glass-card p-md rounded-lg hover:-translate-y-0.5 transition-transform ";
+    let style = "task-card glass-card p-md rounded-xl transition-colors ";
     if (task.statusId === 'in-progress') {
-      style += "border-l-2 border-l-primary shadow-[0_4px_12px_rgba(0,0,0,0.2)]";
+      style += "border-l-2 border-l-primary";
     }
     if (task.statusId === 'done') {
-      style += "bg-surface-container-lowest/30 border-white/5 opacity-70";
+      style += "bg-surface-container-lowest/30 border-white/5";
     }
     return style;
   };
@@ -55,17 +56,17 @@ export default function TaskCard({ task, index }: TaskCardProps) {
         >
           <div className="flex justify-between items-start mb-sm">
             <span className={`font-code text-code ${isDone ? 'text-outline/50 line-through' : 'text-outline'}`}>
-              {task.id.replace('task-', 'PROJ-').toUpperCase()}
+              PROJ-{task.id.split('-')[1].toUpperCase()}
             </span>
-            <span className={`${getPriorityStyle(task.priority)} text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded`}>
-              {task.priority}
+            <span className={`${getPriorityStyle(task.priority)} text-[11px] font-medium px-1.5 py-0.5 rounded`}>
+              {oncelikAdi[task.priority]}
             </span>
           </div>
-          
+
           <h3 className={`font-body-lg text-body-lg leading-tight ${isDone ? 'text-on-surface-variant line-through decoration-outline/50' : 'text-on-surface'} ${task.description ? 'mb-xs' : 'mb-md'}`}>
             {task.title}
           </h3>
-          
+
           {task.description && (
             <p className="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-md">
               {task.description}
@@ -86,13 +87,13 @@ export default function TaskCard({ task, index }: TaskCardProps) {
                   {task.estimatedTime && (
                     <div className="flex items-center gap-xs text-[12px]">
                       <span className="material-symbols-outlined text-[14px]">schedule</span>
-                      {task.estimatedTime}h
+                      {task.estimatedTime} sa.
                     </div>
                   )}
                 </>
               )}
             </div>
-            
+
             {task.assignee ? (
               <div
                 className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] text-white font-bold ${isDone ? 'opacity-60' : ''}`}
