@@ -146,3 +146,18 @@ textarea { font:inherit; }
 .board-next {font-size:13px;color:#5B4BDB;padding:8px;}
 .board-period {font-size:12px;color:#667085;}
 .board-period button {margin:8px 0;}
+
+.jury-two-choices {grid-template-columns:repeat(2,minmax(0,1fr));}
+.jury-choices button[aria-pressed=true] {border:2px solid #5B4BDB;background:#F0EDF9;padding:21px;}
+.jury-source {font-size:12px;color:#667085;line-height:1.7;margin-top:16px;}
+.jury-comparison {display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;}
+.jury-comparison>div {padding:16px;background:#FFFFFF;border:1px solid #DFE5EB;border-radius:8px;}
+.jury-comparison span {display:block;font-size:10px;letter-spacing:1px;color:#586174;margin-bottom:8px;}
+.jury-comparison strong {font-size:17px;color:#1E1B4B;font-weight:600;line-height:1.6;}
+.jury-answer.jury-delay {background:#FCF7F3;border-color:#E8CFC2;}
+.jury-delay h2 {color:#9B442D;}
+.jury-answer .jury-work-total {font-size:13px;margin-top:16px;}
+.jury-reset-row {display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px;}
+.jury-reset-row p {font-size:13px;color:#586174;}
+.jury-reset-row button:disabled {opacity:.45;cursor:default;}
+@media(max-width:767px){.jury-two-choices,.jury-comparison {grid-template-columns:1fr;}.jury-reset-row {align-items:flex-start;flex-direction:column;}}
