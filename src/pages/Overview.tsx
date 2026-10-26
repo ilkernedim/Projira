@@ -12,6 +12,7 @@ const steps = [
 export default function Overview() {
   const board = useBoardStore(s => s.board);
   const history = useBoardStore(s => s.pastSprints);
+  const resetDemo = useBoardStore(s => s.resetDemo);
   const navigate = useBoardStore(s => s.setCurrentView);
   const [step, setStep] = useState(0);
   const [date] = useState(() => new Date());
@@ -31,6 +32,12 @@ export default function Overview() {
   return <div className="overview-page flex-1 overflow-y-auto">
     <div className="overview-heading"><div><p className="eyebrow">KAPASİTE ZEKA PLATFORMU · ETKİLEŞİMLİ DEMO</p><h1>İşin ritmini bil.<br /><span>Dengeyle planla.</span></h1><p className="overview-intro">Teslim tarihinin arkasındaki iş yükünü görün.<br className="hidden sm:block" /> Karar vermeden önce farklı olasılıkları deneyin.</p></div>
       <div className="demo-stamp"><span className="status-dot" /> Pano verisine bağlı<span>{samples} örnek sprint · {history.length - samples} ek sprint</span></div>
+    </div>
+    <div className="simple-demo-switch">
+      <span>Sade örnek: 3 kişi · 6 görev · 3 geçmiş çalışma dönemi</span>
+      <button onClick={() => {
+        if (window.confirm('Bu tarayıcıdaki pano ve sprint geçmişi 3 kişilik sade örnekle değiştirilecek. Mevcut kayıtlar silinir. Devam edilsin mi?')) { resetDemo(); setStep(0); }
+      }}>Sade örnekle başla</button>
     </div>
     <div className="demo-story">
       <div className="story-tabs" role="tablist" aria-label="Demo senaryosu">{steps.map((s,i) => <button key={s.name} role="tab" id={`story-tab-${i}`} aria-selected={step === i} aria-controls="story-result" onClick={() => setStep(i)} className={step === i ? 'active' : ''}><span className="step-number">0{i + 1}</span><span><b>{s.name}</b><small>{s.detail}</small></span><s.icon size={19} /></button>)}</div>

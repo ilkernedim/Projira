@@ -101,3 +101,5 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .jury-panel>summary {line-height:1.5;}
 .jury-panel>summary+div {margin-top:20px;}
 @media(max-width:767px){.jury-choices {grid-template-columns:1fr;}.jury-choices button {min-height:100px;padding:18px;}.jury-answer {padding:18px;}.jury-answer h2 {font-size:24px;}}
+.simple-demo-switch {display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 18px;font-size:12px;color:#9ca8bf;}
+.simple-demo-switch button {border:1px solid #a299ff40;border-radius:8px;padding:10px 16px;color:#cdc5fc;background:#a299ff0b;}

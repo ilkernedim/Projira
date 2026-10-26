@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ornekPano, ornekSprintler } from '../data/seed';
-import { GUNLUK_SAAT, SPRINT_KAPASITE_SAAT, TAKIM } from '../data/ekip';
+import { GUNLUK_SAAT, SPRINT_KAPASITE_SAAT } from '../data/ekip';
 import { analizEt, oneriBul, senaryoKur, tarihYaz } from '../lib/dengai';
 import { useBoardStore } from '../store/useBoardStore';
 
@@ -23,6 +23,7 @@ export default function JuryGuide() {
   }, [tarih]);
   const temel = useMemo(() => analizEt(veri.board, veri.history, baslangic), [veri, baslangic]);
   const oneri = useMemo(() => oneriBul(veri.board, veri.history, baslangic), [veri, baslangic]);
+  const ekip = temel.uyeler.map(u => u.uye);
   const degisim = senaryoKur(temel, {}, kisi, yeni, kisi, hedef, devir);
   const sonuc = analizEt(veri.board, veri.history, baslangic, degisim.ekstra);
   const toplam = (a: typeof temel) => a.uyeler.reduce((n, u) => n + u.atanan, 0);
@@ -44,7 +45,7 @@ export default function JuryGuide() {
     <section className={`${panel} bg-gradient-to-br from-primary/15 to-secondary/5`}>
       <p className="text-primary font-label-sm mb-sm">DENG-AI · KENDİNİZ DENEYİN</p>
       <h1 className="font-display text-display mb-sm">Ekibi rahatlatın. Takvimi değiştirin.</h1>
-      <p className="text-on-surface-variant max-w-3xl">Beş kişilik bir ekip düşünün. İşler eşit dağılmadığında teslim gecikebilir. Yeni iş ekleyerek veya işi paylaşarak ne değiştiğini burada deneyin.</p>
+      <p className="text-on-surface-variant max-w-3xl">Sade örnekte üç kişilik bir ekip var. İşler eşit dağılmadığında teslim gecikebilir. Yeni iş ekleyerek veya işi paylaşarak ne değiştiğini burada deneyin.</p>
       <p className="mt-md text-on-surface-variant">{veri.kaynak} · Kural tabanlı hesap · Gerçek görevler etkilenmez</p>
     </section>
     <section className={`${panel} jury-quick`}>
@@ -58,7 +59,7 @@ export default function JuryGuide() {
       <div className="jury-answer" role="status">
         <span>BU KARAR NEYİ DEĞİŞTİRDİ?</span>
         <h2>{yeni === 0 && degisim.aktarilan === 0 ? 'Şu an mevcut planı görüyorsunuz.' : fark < 0 ? `Teslim ${-fark} iş günü öne geliyor.` : fark > 0 ? `Teslim ${fark} iş günü gecikiyor.` : 'İş dağılımı değişti; teslim tarihi aynı.'}</h2>
-        <p>{yeni > 0 ? `${TAKIM.find(u => u.id === kisi)?.ad} kişisine ${yeni} saat yeni iş eklendi. ` : ''}{degisim.aktarilan > 0 ? `${TAKIM.find(u => u.id === kisi)?.ad} kişisinin yükü %${temel.uyeler.find(u => u.uye.id === kisi)?.yukYuzde} seviyesinden %${sonuc.uyeler.find(u => u.uye.id === kisi)?.yukYuzde} seviyesine geliyor. ` : ''}{yeni === 0 && degisim.aktarilan === 0 ? 'Yukarıdan bir deneme seçin. Sonuç burada anında güncellenir.' : 'Bu sonuçlar seçili veriden hesaplanan tahminlerdir.'}</p>
+        <p>{yeni > 0 ? `${ekip.find(u => u.id === kisi)?.ad} kişisine ${yeni} saat yeni iş eklendi. ` : ''}{degisim.aktarilan > 0 ? `${ekip.find(u => u.id === kisi)?.ad} kişisinin yükü %${temel.uyeler.find(u => u.uye.id === kisi)?.yukYuzde} seviyesinden %${sonuc.uyeler.find(u => u.uye.id === kisi)?.yukYuzde} seviyesine geliyor. ` : ''}{yeni === 0 && degisim.aktarilan === 0 ? 'Yukarıdan bir deneme seçin. Sonuç burada anında güncellenir.' : 'Bu sonuçlar seçili veriden hesaplanan tahminlerdir.'}</p>
       </div>
     </section>
     <details className={panel}>
@@ -76,12 +77,12 @@ export default function JuryGuide() {
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-md">
         <label>Başlangıç tarihi<input className={`${input} mt-sm`} aria-label="Başlangıç tarihi" type="date" value={tarih} onChange={e => { if (/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)) setTarih(e.target.value); }} /></label>
-        <label>Üzerinde çalışacağınız kişi<select className={`${input} mt-sm`} value={kisi} onChange={e => { setKisi(e.target.value); setDevir(0); }}>{TAKIM.map(u => <option key={u.id} value={u.id}>{u.ad} · {u.rol}</option>)}</select></label>
+        <label>Üzerinde çalışacağınız kişi<select className={`${input} mt-sm`} value={kisi} onChange={e => { setKisi(e.target.value); setDevir(0); }}>{ekip.map(u => <option key={u.id} value={u.id}>{u.ad} · {u.rol}</option>)}</select></label>
         <label>Yeni iş: {yeni} saat<input aria-label="Yeni iş saati" className="w-full mt-md" type="range" min="0" max="60" value={yeni} onChange={e => setYeni(+e.target.value)} /></label>
         <label>Devredilecek iş: {degisim.aktarilan} saat<input aria-label="Devredilecek saat" className="w-full mt-md" type="range" min="0" max={(temel.uyeler.find(u => u.uye.id === kisi)?.atanan ?? 0) + yeni} value={degisim.aktarilan} disabled={kisi === hedef} onChange={e => setDevir(+e.target.value)} /></label>
-        <label>İşin devredileceği kişi<select className={`${input} mt-sm`} value={hedef} onChange={e => setHedef(e.target.value)}>{TAKIM.map(u => <option key={u.id} value={u.id}>{u.ad} · {u.rol}</option>)}</select></label>
+        <label>İşin devredileceği kişi<select className={`${input} mt-sm`} value={hedef} onChange={e => setHedef(e.target.value)}>{ekip.map(u => <option key={u.id} value={u.id}>{u.ad} · {u.rol}</option>)}</select></label>
       </div>
-      <p className="mt-md text-on-surface-variant">Önerilen deneme: örnek veride Elif'e 12 saat ekleyin. Sonra 18 saati Zeynep'e devredin. Her iki adımda da teslim tarihini ve toplam işi karşılaştırın. İş devrinde yetkinlik uygunluğunu ayrıca değerlendirmek gerekir.</p>
+      <p className="mt-md text-on-surface-variant">Bir kişi seçin, yeni iş veya devredilecek saat miktarını değiştirin. Teslim tarihi ve toplam iş aşağıda güncellenir. İş devrinde yetkinlik uygunluğu ayrıca değerlendirilir.</p>
     </details>
     <section className="grid sm:grid-cols-3 gap-md" aria-live="polite">
       <div className={panel}><h2>Karardan önce</h2><p className="font-h2 text-h2 mt-sm">{tarihYaz(temel.gercekciBitis)}</p><p>{temel.gercekciIsGunu} iş günü</p></div>

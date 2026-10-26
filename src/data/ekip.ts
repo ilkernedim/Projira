@@ -11,18 +11,23 @@ export const SPRINT_KAPASITE_SAAT = 60;
 export const GUNLUK_SAAT = 6;
 
 export const TAKIM: TakimUyesi[] = [
-  { id: 'elif', ad: 'Elif', rol: 'Backend', renk: '#ef6719' },
-  { id: 'mert', ad: 'Mert', rol: 'Frontend', renk: '#4b8eff' },
-  { id: 'zeynep', ad: 'Zeynep', rol: 'Test', renk: '#8b5cf6' },
-  { id: 'can', ad: 'Can', rol: 'Backend', renk: '#14b8a6' },
-  { id: 'deniz', ad: 'Deniz', rol: 'Frontend', renk: '#e879a9' },
+  { id: 'elif', ad: 'Elif', rol: 'Geliştirici', renk: '#ef6719' },
+  { id: 'mert', ad: 'Mert', rol: 'Geliştirici', renk: '#4b8eff' },
+  { id: 'zeynep', ad: 'Zeynep', rol: 'Geliştirici', renk: '#8b5cf6' },
+
 ];
 
-// her sprint için [tahmin, gerçekleşen] saat, sprint 1'den 6'ya
+// her sprint için [tahmin, gerçekleşen] saat, ilk üç kayıt sade demoda kullanılır
 export const GECMIS: Record<string, [number, number][]> = {
-  elif: [[40, 52], [42, 60], [45, 66], [44, 64], [46, 68], [48, 72]],
-  mert: [[38, 42], [40, 44], [36, 40], [42, 47], [40, 43], [38, 41]],
-  zeynep: [[30, 31], [32, 32], [34, 35], [30, 31], [33, 33], [35, 35]],
+  elif: [[40, 60], [44, 66], [48, 72]],
+  mert: [[30, 33], [30, 33], [30, 33]],
+  zeynep: [[30, 30], [30, 30], [30, 30]],
   can: [[36, 44], [38, 50], [40, 52], [38, 49], [42, 55], [40, 52]],
   deniz: [[28, 30], [30, 31], [34, 35], [32, 34], [30, 31], [34, 36]],
 };
+
+// Önceki demo kayıtları silinmez; analizde bu kişilerin işleri de korunur.
+export const ESKI_UYELER: TakimUyesi[] = [
+  { id: 'can', ad: 'Can', rol: 'Geliştirici', renk: '#14b8a6' },
+  { id: 'deniz', ad: 'Deniz', rol: 'Geliştirici', renk: '#e879a9' },
+];

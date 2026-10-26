@@ -1,6 +1,6 @@
 import { addBusinessDays, differenceInBusinessDays, format } from 'date-fns';
 import { tr } from 'date-fns/locale';
-import { GUNLUK_SAAT, SPRINT_KAPASITE_SAAT, TAKIM, type TakimUyesi } from '../data/ekip';
+import { GUNLUK_SAAT, SPRINT_KAPASITE_SAAT, TAKIM, ESKI_UYELER, type TakimUyesi } from '../data/ekip';
 import type { BoardData, SprintReport, Task } from '../interfaces';
 
 export interface Kayit {
@@ -62,10 +62,13 @@ function uyeGecmisi(sprintler: SprintReport[], id: string): Kayit[] {
 
 export function analizEt(board: BoardData, sprintler: SprintReport[], baslangic: Date, ekstra: Record<string, number> = {}): EkipAnalizi {
   const acik = acikIsler(board);
-  const tumGecmis = TAKIM.flatMap((u) => uyeGecmisi(sprintler, u.id));
+  const eskiUyeler = ESKI_UYELER.filter((u) => Object.values(board.tasks).some(t => t.assignee?.id === u.id)
+    || sprintler.some(s => s.memberStats?.[u.id]));
+  const takim = [...TAKIM, ...eskiUyeler];
+  const tumGecmis = takim.flatMap((u) => uyeGecmisi(sprintler, u.id));
   const ekipCarpani = carpan(tumGecmis);
 
-  const uyeler: UyeAnalizi[] = TAKIM.map((uye) => {
+  const uyeler: UyeAnalizi[] = takim.map((uye) => {
     const gecmis = uyeGecmisi(sprintler, uye.id);
     // kişinin kendi geçmişi yoksa ekip ortalaması kullanılır
     const c = gecmis.length > 0 ? carpan(gecmis) : ekipCarpani;

@@ -4,7 +4,7 @@ import type { BoardData, Task, SprintReport } from '../interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { ornekPano, ornekSprintler } from '../data/seed';
 
-// başlangıç verisi src/data/seed.ts içinde, DENG-AI demosu için 5 kişilik örnek ekip ve 6 sprintlik geçmiş
+// başlangıç verisi src/data/seed.ts içinde, DENG-AI demosu için 3 kişilik örnek ekip ve 3 sprintlik geçmiş
 
 interface BoardState {
   board: BoardData;
@@ -38,7 +38,7 @@ export const useBoardStore = create<BoardState>()(
   activeTaskId: null,
   currentView: 'overview',
   isSprintActive: true,
-  sprintName: 'Sprint 7',
+  sprintName: 'Sprint 4',
   pastSprints: ornekSprintler(),
   searchQuery: '',
   isCreateModalOpen: false,
@@ -131,7 +131,7 @@ export const useBoardStore = create<BoardState>()(
     board: ornekPano(),
     pastSprints: ornekSprintler(),
     isSprintActive: true,
-    sprintName: 'Sprint 7',
+    sprintName: 'Sprint 4',
     activeTaskId: null,
     searchQuery: '',
   }),
