@@ -88,3 +88,16 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .jury-panel table th {color:#c1b8ef;}
 .jury-panel table td,.jury-panel table th {padding:12px 10px;}
 .jury-panel table tbody tr:nth-child(2n) {background:#a29aff04;}
+.jury-choices {display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.jury-choices button {display:flex;flex-direction:column;text-align:left;gap:10px;min-height:130px;padding:22px;border:1px solid #9d8fff30;border-radius:12px;background:linear-gradient(135deg,#8a75ef18,#6ed6bd06);transition:border-color .2s,transform .2s;}
+.jury-choices button:hover:not(:disabled) {border-color:#b5a8fa;transform:translateY(-2px);}
+.jury-choices button:disabled {opacity:.5;cursor:not-allowed;}
+.jury-choices span,.jury-answer>span {font-size:10px;letter-spacing:1.5px;color:#a99ddd;}
+.jury-choices strong {font-size:20px;font-weight:500;letter-spacing:-.5px;}
+.jury-choices small {font-size:12px;line-height:1.5;color:#a5aec2;}
+.jury-answer {margin-top:24px;padding:24px;border-radius:12px;border:1px solid #76d8bc30;background:#76d8bc08;}
+.jury-answer h2 {font-size:28px;font-weight:500;letter-spacing:-.5px;color:#9ae8d2;margin:12px 0;}
+.jury-answer p {color:#bac6cf;line-height:1.7;font-size:14px;}
+.jury-panel>summary {line-height:1.5;}
+.jury-panel>summary+div {margin-top:20px;}
+@media(max-width:767px){.jury-choices {grid-template-columns:1fr;}.jury-choices button {min-height:100px;padding:18px;}.jury-answer {padding:18px;}.jury-answer h2 {font-size:24px;}}
