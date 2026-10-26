@@ -5,7 +5,7 @@ import Column from '../components/Column';
 import TaskModal from '../components/TaskModal';
 
 export default function Board() {
-  const { board, moveTask, isSprintActive, sprintName, startSprint, endSprint, searchQuery, setCreateModalOpen } = useBoardStore();
+  const { board, moveTask, isSprintActive, sprintName, startSprint, endSprint, searchQuery, setCreateModalOpen, setCurrentView } = useBoardStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -33,7 +33,7 @@ export default function Board() {
 
       <div className="px-lg py-md flex flex-wrap items-center justify-between gap-md shrink-0 border-b border-white/5 bg-surface-container-lowest/50">
         <div className="flex items-center gap-sm">
-          <span className="text-on-surface-variant text-body-md">Görevleri sürükleyin, ayrıntıları açmak için tıklayın.</span>
+          <span className="text-on-surface-variant text-body-md">Bir göreve tıklayın. Sorumlu kişiyi ve süreyi değiştirebilirsiniz.</span>
           <button
             onClick={() => setCreateModalOpen(true)}
             className="bg-primary text-on-primary font-body-md text-body-md font-medium px-md py-1.5 rounded-DEFAULT hover:bg-primary-fixed transition-colors active:scale-95 duration-200"
@@ -41,7 +41,8 @@ export default function Board() {
             Yeni görev
           </button>
 
-          <div className="ml-md">
+          <button className="board-next" onClick={() => setCurrentView('overview')}>Teslim tarihine etkisini gör →</button>
+          <details className="board-period"><summary>Dönem işlemleri</summary>
             {!isSprintActive ? (
               <button
                 onClick={() => startSprint(sprintName)}
@@ -61,7 +62,7 @@ export default function Board() {
                 Dönemi tamamla
               </button>
             )}
-          </div>
+          </details>
         </div>
 
       </div>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowRight, ArrowUpRight, Check, ChevronRight, FlaskConical, Layers3, MoveRight, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, FlaskConical, Layers3, MoveRight, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react';
 import { useBoardStore } from '../store/useBoardStore';
 import { ornekPano, ornekSprintler } from '../data/seed';
 import { analizEt, oneriBul, tarihYaz } from '../lib/dengai';
@@ -75,19 +75,13 @@ export default function Overview() {
       <button ref={kapatRef} onClick={cik}>Sunumdan çık <span>Esc</span></button>
     </div>}
     {!sunum && <div className="presentation-launch">
-      <div><strong>Sunumun hazır. Üç adımda anlat.</strong><p>Örnek verilerle başlar. Kayıtlı görevlerin değişmez.</p></div>
+      <div><strong>İlk kez mi kullanıyorsunuz?</strong><p>Sunuma başla düğmesine basın. Sonraki adım ile ilerleyin; neyin değiştiğini ekranda görün.</p></div>
       <button ref={baslatRef} onClick={() => { setStep(0); setNotlarAcik(false); setSunum(true); }}>Sunuma başla <ArrowRight size={18}/></button>
     </div>}
 
-    <div className="overview-heading"><div><p className="eyebrow">KAPASİTE ZEKA PLATFORMU · ETKİLEŞİMLİ DEMO</p><h1>İşin ritmini bil.<br /><span>Dengeyle planla.</span></h1><p className="overview-intro">Teslim tarihinin arkasındaki iş yükünü görün.<br className="hidden sm:block" /> Karar vermeden önce farklı olasılıkları deneyin.</p></div>
+    <div className="overview-heading"><div><p className="eyebrow">DENG-AI · KISA DEMO</p><h1>İş kimde, teslim ne zaman?</h1><p className="overview-intro">Aşağıdaki üç sekmeye sırayla tıklayın. Yeni işin ve iş paylaşımının teslim tarihine etkisini karşılaştırın.</p></div>
       <div className="demo-stamp"><span className="status-dot" /> {sunum ? 'Bağımsız sunum örneği' : 'Pano verisine bağlı'}<span>{samples} örnek sprint · {history.length - samples} ek sprint</span></div>
     </div>
-    {!sunum && <div className="simple-demo-switch">
-      <span>Sade örnek: 3 kişi · 6 görev · 3 geçmiş çalışma dönemi</span>
-      <button onClick={() => {
-        if (window.confirm('Bu tarayıcıdaki pano ve sprint geçmişi 3 kişilik sade örnekle değiştirilecek. Mevcut kayıtlar silinir. Devam edilsin mi?')) { resetDemo(); setStep(0); }
-      }}>Sade örnekle başla</button>
-    </div>}
     <div className="demo-story">
       <div className="story-tabs" role="tablist" aria-label="Demo senaryosu">{steps.map((s,i) => <button key={s.name} role="tab" id={`story-tab-${i}`} aria-selected={step === i} aria-controls="story-result" onClick={() => setStep(i)} className={step === i ? 'active' : ''}><span className="step-number">0{i + 1}</span><span><b>{s.name}</b><small>{s.detail}</small></span><s.icon size={19} /></button>)}</div>
       <section id="story-result" role="tabpanel" aria-labelledby={`story-tab-${step}`} className="story-body">
@@ -110,7 +104,10 @@ export default function Overview() {
       <div className="presentation-tools"><button aria-expanded={notlarAcik} onClick={() => setNotlarAcik(!notlarAcik)}>{notlarAcik ? 'Konuşma notlarını gizle' : 'Prova için konuşma notlarını göster'}</button><button onClick={notlariIndir}>Sunum kartını indir</button></div>
       {notlarAcik && <div className="presentation-notes"><small>BU NOTLAR EKRANA YANSIR · SUNUMDAN ÖNCE GİZLEYEBİLİRSİN</small><h3>Şunu söyleyebilirsin</h3><p>{konusma[step]}</p>{step === 2 && <p>{kapanis}</p>}</div>}
     </section>}
-    <div className="overview-actions"><button className="action-card" onClick={() => navigate('jury')}><span className="action-icon"><FlaskConical size={24} /></span><span><b>Kontrolü siz alın</b><small>Saatleri değiştirin, hesabı kendiniz doğrulayın.</small></span><ArrowUpRight size={23}/></button><button className="action-card" onClick={() => navigate('dengai')}><span className="action-icon purple"><Layers3 size={24}/></span><span><b>Analizin derinine inin</b><small>Sprint geçmişi, kapasite ve serbest senaryolar.</small></span><ChevronRight size={23}/></button></div>
+    <div className="overview-actions"><button className="action-card" onClick={() => navigate('board')}><span className="action-icon purple"><Layers3 size={24}/></span><span><b>Görevleri görün</b><small>Bir karta tıklayın; sorumlusunu ve süresini görün.</small></span><ArrowUpRight size={23}/></button><button className="action-card" onClick={() => navigate('jury')}><span className="action-icon"><FlaskConical size={24}/></span><span><b>Kendiniz deneyin</b><small>Bir düğmeye basın, teslimin nasıl değiştiğini görün.</small></span><ArrowUpRight size={23}/></button></div>
+    {!sunum && <details className="demo-reset"><summary>Örnek verileri yenile</summary><p>Bu tarayıcıdaki görevler ve dönem geçmişi ilk örneğe döner.</p><button onClick={() => {
+      if (window.confirm('Kayıtlı pano ve dönem geçmişi silinip örnek veriler yüklenecek. Devam edilsin mi?')) { resetDemo(); setStep(0); }
+    }}>Örneği sıfırla</button></details>}
     <footer className="overview-footer"><span><ShieldCheck size={17}/> Şeffaf hesap · Örnek veriler etiketli · Gerçek Jira bağlantısı yok</span><button onClick={() => navigate('jury')}>Nasıl hesaplanıyor? <ArrowRight size={14}/></button></footer>
   </div>;
 }

@@ -1,4 +1,3 @@
-import { oncelikAdi } from '../lib/labels';
 import { Draggable } from '@hello-pangea/dnd';
 import type { Task } from '../interfaces';
 import { twMerge } from 'tailwind-merge';
@@ -12,21 +11,6 @@ interface TaskCardProps {
 
 export default function TaskCard({ task, index }: TaskCardProps) {
   const setActiveTask = useBoardStore(state => state.setActiveTask);
-
-  const getPriorityStyle = (priority: string) => {
-    switch (priority) {
-      case 'Highest':
-      case 'High':
-        return 'bg-error/10 text-error';
-      case 'Medium':
-        return 'bg-secondary/10 text-secondary';
-      case 'Low':
-      case 'Lowest':
-        return 'bg-surface-container-highest text-on-surface-variant';
-      default:
-        return 'bg-surface-container-highest text-on-surface-variant';
-    }
-  };
 
   const getCardStyle = () => {
     let style = "task-card glass-card p-md rounded-xl transition-colors ";
@@ -54,15 +38,6 @@ export default function TaskCard({ task, index }: TaskCardProps) {
             snapshot.isDragging && 'rotate-2 shadow-2xl z-50 opacity-100 ring-1 ring-primary/50'
           )}
         >
-          <div className="flex justify-between items-start mb-sm">
-            <span className={`font-code text-code ${isDone ? 'text-outline/50 line-through' : 'text-outline'}`}>
-              PROJ-{task.id.split('-')[1].toUpperCase()}
-            </span>
-            <span className={`${getPriorityStyle(task.priority)} text-[11px] font-medium px-1.5 py-0.5 rounded`}>
-              {oncelikAdi[task.priority]}
-            </span>
-          </div>
-
           <h3 className={`font-body-lg text-body-lg leading-tight ${isDone ? 'text-on-surface-variant line-through decoration-outline/50' : 'text-on-surface'} ${task.description ? 'mb-xs' : 'mb-md'}`}>
             {task.title}
           </h3>
@@ -96,11 +71,11 @@ export default function TaskCard({ task, index }: TaskCardProps) {
 
             {task.assignee ? (
               <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] text-white font-bold ${isDone ? 'opacity-60' : ''}`}
+                className={`px-2 py-1 rounded-full flex items-center justify-center text-[12px] text-white font-medium ${isDone ? 'opacity-60' : ''}`}
                 style={{ background: TAKIM.find((u) => u.id === task.assignee?.id)?.renk ?? '#8b90a0' }}
                 title={task.assignee.name}
               >
-                {task.assignee.name.slice(0, 2).toUpperCase()}
+                {task.assignee.name}
               </div>
             ) : (
               <div className="w-6 h-6 rounded-full border border-dashed border-on-surface-variant/60 flex items-center justify-center text-[11px] text-on-surface-variant" title="Atanmamış">

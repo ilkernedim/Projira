@@ -134,3 +134,15 @@ textarea { font:inherit; }
 .task-card p { font-size:13px; line-height:1.6; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background:#C7CDDA; }
 @media(max-width:767px){.board-columns {padding:16px;gap:16px;}.board-column {flex-basis:280px;}.board-page>div:first-child {padding:16px;}}
+
+/* İlk kullanımda yalnızca üç durak gösterilir. */
+.advanced-navigation {margin:28px 14px;color:#667085;font-size:12px;}
+.advanced-navigation summary,.demo-reset summary,.board-period summary {cursor:pointer;padding:10px 0;}
+.advanced-navigation .nav-items {margin:8px -14px;}
+.overview-heading h1 {font-size:clamp(28px,3vw,38px);letter-spacing:-1px;margin:10px 0;}
+.demo-reset {margin-top:24px;color:#667085;font-size:12px;}
+.demo-reset p {margin:8px 0;line-height:1.7;}
+.demo-reset button {border:1px solid #D6DAE5;padding:10px 14px;border-radius:8px;color:#5B4BDB;}
+.board-next {font-size:13px;color:#5B4BDB;padding:8px;}
+.board-period {font-size:12px;color:#667085;}
+.board-period button {margin:8px 0;}
